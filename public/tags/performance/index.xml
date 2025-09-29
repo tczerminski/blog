@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Performance on czerminski.me</title><link>https://www.czerminski.me/tags/performance/</link><description>Recent content in Performance on czerminski.me</description><generator>Hugo</generator><language>en</language><lastBuildDate>Sat, 27 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://www.czerminski.me/tags/performance/index.xml" rel="self" type="application/rss+xml"/><item><title>Beating Go’s Default Protobuf for Prometheus Remote Write</title><link>https://www.czerminski.me/posts/protobuf/</link><pubDate>Sat, 27 Sep 2025 00:00:00 +0000</pubDate><guid>https://www.czerminski.me/posts/protobuf/</guid><description>&lt;h1 id="beating-gos-default-protobuf-for-prometheus-remote-write"&gt;
+ Beating Go’s Default Protobuf for Prometheus Remote Write
+ &lt;a class="heading-link" href="#beating-gos-default-protobuf-for-prometheus-remote-write"&gt;
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"&gt;&lt;/i&gt;
+ &lt;span class="sr-only"&gt;Link to heading&lt;/span&gt;
+ &lt;/a&gt;
+&lt;/h1&gt;
+&lt;h2 id="project-background"&gt;
+ Project Background
+ &lt;a class="heading-link" href="#project-background"&gt;
+ &lt;i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"&gt;&lt;/i&gt;
+ &lt;span class="sr-only"&gt;Link to heading&lt;/span&gt;
+ &lt;/a&gt;
+&lt;/h2&gt;
+&lt;p&gt;The story starts with an observability platform we were building for a large European e-commerce.&lt;br&gt;
+It handled metrics scraping, monitoring checks, and alerting — though not logs or tracing.&lt;/p&gt;
+&lt;p&gt;As adoption grew, so did the problems:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Some teams exported metrics with &lt;strong&gt;UUIDs as label values&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Others had pods stuck in &lt;strong&gt;CrashLoopBack&lt;/strong&gt;, generating a fresh set of labels on each restart.&lt;/li&gt;
+&lt;li&gt;We had &lt;strong&gt;no way to impose restrictions&lt;/strong&gt; on clients due to internal business politics.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The result was &lt;strong&gt;high-cardinality explosions&lt;/strong&gt; that caused several outages.&lt;/p&gt;</description></item></channel></rss>

@@ -24,7 +24,7 @@ As adoption grew, so did the problems:
 
 - Some teams exported metrics with **UUIDs as label values**.  
 - Others had pods stuck in **CrashLoopBack**, generating a fresh set of labels on each restart.  
-- We had **no way to impose restrictions** on clients due to internal business politics.  
+- We had no practical way to impose restrictions directly on clients. Technically, this would require validation during scraping — but not all metrics were scraped, some were pushed instead. Even worse, cardinality explosions often happened immediately after the first metric was published, sometimes causing an outage before the system could even react. In practice, **isolating tenants was the only reliable safeguard**.  
 
 The result was **high-cardinality explosions** that caused several outages.
 
@@ -32,7 +32,7 @@ At the time, we were using **VictoriaMetrics standalone**, which had no concept 
 all timeseries went into a single blob. That meant **one misbehaving user could bring down everyone**.
 
 We considered moving to **VictoriaMetrics Cluster**, but key features like downsampling were behind a paywall.  
-When we asked about enterprise pricing, the quote was so far above our budget it wasn’t even close.
+When we asked about enterprise pricing, the quote was far beyond our budget.
 
 So we turned to **Cortex**. As a CNCF project, it’s fully open source and supports true multi-tenancy.  
 The plan was simple: distribute metrics among tenants by populating the `X-Scope-OrgID` HTTP header in the Prometheus Remote Write protocol.  
@@ -47,8 +47,18 @@ The final architecture looked like this:
 The missing piece was a **relay**: a lightweight service that intercepted Remote Write traffic between VMAgent and Cortex, grouped metrics by `service_id`, and added the proper HTTP header.
 
 That’s when the real challenge began — building a relay fast enough to handle **gigabytes per second** of traffic.  
-And the very first bottleneck turned out to be… Go’s default protobuf unmarshaller.
+And the very first bottleneck turned out to be… Go’s default Protobuf unmarshaller.  
 
+---
+
+### Architecture diagram
+
+```mermaid
+flowchart LR
+    A[Prometheus Scrapers] --> B[VMAgent]
+    B --> C[Relay (adds X-Scope-OrgID)]
+    C --> D[Cortex Distributor]
+```
 
 ## The code
 

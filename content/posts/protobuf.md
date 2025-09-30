@@ -49,16 +49,6 @@ The missing piece was a **relay**: a lightweight service that intercepted Remote
 That’s when the real challenge began — building a relay fast enough to handle **gigabytes per second** of traffic.  
 And the very first bottleneck turned out to be… Go’s default Protobuf unmarshaller.  
 
----
-
-### Architecture diagram
-
-```mermaid
-flowchart LR
-    A[Prometheus Scrapers] --> B[VMAgent]
-    B --> C[Relay (adds X-Scope-OrgID)]
-    C --> D[Cortex Distributor]
-```
 
 ## The code
 

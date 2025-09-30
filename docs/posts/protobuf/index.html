@@ -217,19 +217,7 @@ The value for this header came from the <code>service_id</code> label, which eve
 <p>The missing piece was a <strong>relay</strong>: a lightweight service that intercepted Remote Write traffic between VMAgent and Cortex, grouped metrics by <code>service_id</code>, and added the proper HTTP header.</p>
 <p>That’s when the real challenge began — building a relay fast enough to handle <strong>gigabytes per second</strong> of traffic.<br>
 And the very first bottleneck turned out to be… Go’s default Protobuf unmarshaller.</p>
-<hr>
-<h3 id="architecture-diagram">
-  Architecture diagram
-  <a class="heading-link" href="#architecture-diagram">
-    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
-    <span class="sr-only">Link to heading</span>
-  </a>
-</h3>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
-    A[Prometheus Scrapers] --&gt; B[VMAgent]
-    B --&gt; C[Relay (adds X-Scope-OrgID)]
-    C --&gt; D[Cortex Distributor]
-</code></pre><h2 id="the-code">
+<h2 id="the-code">
   The code
   <a class="heading-link" href="#the-code">
     <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>

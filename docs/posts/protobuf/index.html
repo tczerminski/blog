@@ -198,13 +198,13 @@ It handled metrics scraping, monitoring checks, and alerting — though not logs
 <ul>
 <li>Some teams exported metrics with <strong>UUIDs as label values</strong>.</li>
 <li>Others had pods stuck in <strong>CrashLoopBack</strong>, generating a fresh set of labels on each restart.</li>
-<li>We had <strong>no way to impose restrictions</strong> on clients due to internal business politics.</li>
+<li>We had no practical way to impose restrictions directly on clients. Technically, this would require validation during scraping — but not all metrics were scraped, some were pushed instead. Even worse, cardinality explosions often happened immediately after the first metric was published, sometimes causing an outage before the system could even react. In practice, <strong>isolating tenants was the only reliable safeguard</strong>.</li>
 </ul>
 <p>The result was <strong>high-cardinality explosions</strong> that caused several outages.</p>
 <p>At the time, we were using <strong>VictoriaMetrics standalone</strong>, which had no concept of multi-tenancy:<br>
 all timeseries went into a single blob. That meant <strong>one misbehaving user could bring down everyone</strong>.</p>
 <p>We considered moving to <strong>VictoriaMetrics Cluster</strong>, but key features like downsampling were behind a paywall.<br>
-When we asked about enterprise pricing, the quote was so far above our budget it wasn’t even close.</p>
+When we asked about enterprise pricing, the quote was far beyond our budget.</p>
 <p>So we turned to <strong>Cortex</strong>. As a CNCF project, it’s fully open source and supports true multi-tenancy.<br>
 The plan was simple: distribute metrics among tenants by populating the <code>X-Scope-OrgID</code> HTTP header in the Prometheus Remote Write protocol.<br>
 The value for this header came from the <code>service_id</code> label, which every exported metric was required to define.</p>
@@ -216,8 +216,20 @@ The value for this header came from the <code>service_id</code> label, which eve
 </ul>
 <p>The missing piece was a <strong>relay</strong>: a lightweight service that intercepted Remote Write traffic between VMAgent and Cortex, grouped metrics by <code>service_id</code>, and added the proper HTTP header.</p>
 <p>That’s when the real challenge began — building a relay fast enough to handle <strong>gigabytes per second</strong> of traffic.<br>
-And the very first bottleneck turned out to be… Go’s default protobuf unmarshaller.</p>
-<h2 id="the-code">
+And the very first bottleneck turned out to be… Go’s default Protobuf unmarshaller.</p>
+<hr>
+<h3 id="architecture-diagram">
+  Architecture diagram
+  <a class="heading-link" href="#architecture-diagram">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">flowchart LR
+    A[Prometheus Scrapers] --&gt; B[VMAgent]
+    B --&gt; C[Relay (adds X-Scope-OrgID)]
+    C --&gt; D[Cortex Distributor]
+</code></pre><h2 id="the-code">
   The code
   <a class="heading-link" href="#the-code">
     <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>

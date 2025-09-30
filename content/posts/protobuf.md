@@ -17,7 +17,7 @@ aliases = []
 
 ## Project Background
 
-The story starts with an observability platform we were building for a large European e-commerce.  
+The story starts with an observability platform we were building for a large e-commerce.  
 It handled metrics scraping, monitoring checks, and alerting — though not logs or tracing.
 
 As adoption grew, so did the problems:
@@ -508,7 +508,7 @@ Showing top 10 nodes out of 29
 
 * **Deserialization is no longer a hotspot.** In the previous profile, deserialization was eating a large chunk of allocations. With the tailored unmarshaller, its footprint is down to just ~2%.
 * **`proto.Marshal` still dominates.** The serialization path remains the single biggest contributor to allocation pressure. This makes sense — Remote Write still requires encoding back into protobuf wire format when shipping samples, and the encoder is still generic.
-* **Compression is non‑trivial.** Zstd compression shows up prominently in the profile. While not the focus of this experiment, it’s a reminder that in end‑to‑end pipelines, serialization and compression overheads often dominate CPU and memory.
+* **Compression is non‑trivial.** ZSTD compression shows up prominently in the profile. While not the focus of this experiment, it’s a reminder that in end‑to‑end pipelines, serialization and compression overheads often dominate CPU and memory.
 
 ### Key takeaway
 

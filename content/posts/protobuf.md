@@ -26,7 +26,7 @@ As adoption grew, so did the problems:
 - Others had pods stuck in **CrashLoopBack**, generating a fresh set of labels on each restart.  
 - We had no practical way to impose restrictions directly on clients. Technically, this would require validation during scraping — but not all metrics were scraped, some were pushed instead. Even worse, cardinality explosions often happened immediately after the first metric was published, sometimes causing an outage before the system could even react. In practice, **isolating tenants was the only reliable safeguard**.  
 
-The result was **high-cardinality explosions** that caused several outages.
+The result was **high-cardinality explosions** that caused several sleepless nights.
 
 At the time, we were using **VictoriaMetrics standalone**, which had no concept of multi-tenancy:  
 all timeseries went into a single blob. That meant **one misbehaving user could bring down everyone**.

@@ -200,7 +200,7 @@ It handled metrics scraping, monitoring checks, and alerting — though not logs
 <li>Others had pods stuck in <strong>CrashLoopBack</strong>, generating a fresh set of labels on each restart.</li>
 <li>We had no practical way to impose restrictions directly on clients. Technically, this would require validation during scraping — but not all metrics were scraped, some were pushed instead. Even worse, cardinality explosions often happened immediately after the first metric was published, sometimes causing an outage before the system could even react. In practice, <strong>isolating tenants was the only reliable safeguard</strong>.</li>
 </ul>
-<p>The result was <strong>high-cardinality explosions</strong> that caused several outages.</p>
+<p>The result was <strong>high-cardinality explosions</strong> that caused several sleepless nights.</p>
 <p>At the time, we were using <strong>VictoriaMetrics standalone</strong>, which had no concept of multi-tenancy:<br>
 all timeseries went into a single blob. That meant <strong>one misbehaving user could bring down everyone</strong>.</p>
 <p>We considered moving to <strong>VictoriaMetrics Cluster</strong>, but key features like downsampling were behind a paywall.<br>

@@ -145,7 +145,7 @@ for i := 0; i < b.N; i++ {
 and got following results:
 ```
 goos: darwin
-goarch: arm64
+goarch: amd64
 pkg: relay/tests
 cpu: Apple
 Benchmark_Dispatch-12               8372            127002 ns/op          193759 B/op        268 allocs/op
@@ -470,7 +470,7 @@ Once again, let’s benchmark the code — this time replacing the default Proto
 
 ```
 goos: darwin
-goarch: arm64
+goarch: amd64
 pkg: relay/tests
 cpu: Apple
 Benchmark_Dispatch-12              11284            104857 ns/op           28232 B/op        111 allocs/op
